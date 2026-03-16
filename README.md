@@ -2,15 +2,28 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A Chrome DevTools extension that copies CSS from the selected element to your clipboard with one click.
+A Chrome DevTools extension that copies CSS from any element to your clipboard — via sidebar buttons, keyboard shortcuts, or right-click context menu.
 
 ## Features
 
-Three buttons in the Elements panel sidebar:
+Three ways to copy CSS from an element:
 
-- **Copy Computed** — Non-default computed styles only (filters out browser defaults by comparing against a reference element)
-- **Copy Styles** — Matched CSS rules from stylesheets, grouped by selector with source file attribution
-- **Copy Animations** — CSS animations, transitions, active Web Animations, and full `@keyframes` definitions
+### Sidebar Panel (in DevTools Elements tab)
+- **Copy Computed** — Non-default computed styles (filtered against browser defaults)
+- **Copy Styles** — Matched CSS rules from stylesheets, with selectors and source attribution
+- **Copy Animations** — CSS animations, transitions, and full `@keyframes` definitions
+
+### Keyboard Shortcuts
+| Shortcut | Mac | Action |
+|----------|-----|--------|
+| `Ctrl+Shift+1` | `Cmd+Shift+1` | Copy computed styles |
+| `Ctrl+Shift+2` | `Cmd+Shift+2` | Copy matched CSS rules |
+| `Ctrl+Shift+3` | `Cmd+Shift+3` | Copy animations |
+
+Shortcuts can be customized at `chrome://extensions/shortcuts`.
+
+### Right-Click Context Menu
+Right-click any element on the page → **Style Copier** → choose what to copy.
 
 All outputs include element identification (tag, id, classes, selector path) as CSS comments.
 
@@ -27,14 +40,15 @@ Coming soon.
 2. Open `chrome://extensions` in Chrome
 3. Enable **Developer mode** (top right)
 4. Click **Load unpacked** and select this folder
-5. Open DevTools on any page — find **"Style Copier"** in the Elements panel sidebar tabs
+5. Open DevTools on any page — find **"Style Copier"** in the Elements panel sidebar
 
 ## Usage
 
-1. Open Chrome DevTools (`F12` or `Cmd+Opt+I`)
-2. Select any element in the **Elements** panel
-3. Click the **Style Copier** tab in the sidebar (next to Styles / Computed)
-4. Click one of the three buttons — the CSS is copied to your clipboard
+**Sidebar:** Select an element in the Elements panel → click a button in the Style Copier sidebar tab.
+
+**Keyboard:** Select an element in Elements panel → press a shortcut.
+
+**Right-click:** Right-click any element on the page → Style Copier → choose an option.
 
 ### Example Output
 
@@ -61,9 +75,6 @@ background: rgb(255, 255, 255);
 border: 1px solid rgb(224, 224, 224);
 border-radius: 8px;
 padding: 20px;
-
-/* --- .card (theme.css) @media (min-width: 600px) --- */
-max-width: 720px;
 ```
 
 **Copy Animations:**
@@ -87,13 +98,13 @@ animation-iteration-count: infinite;
 
 ## Limitations
 
-- Cross-origin stylesheets cannot be read (browser security restriction) — a warning comment is included in the output
+- Cross-origin stylesheets cannot be read (browser security) — a warning is included
 - Pseudo-class rules (`:hover`, `:focus`) only appear when the state is active
 - Shadow DOM scoped stylesheets are not traversed
 
 ## Chrome Web Store Description
 
-> Copy CSS from any element in Chrome DevTools with one click. Three modes: computed styles (non-default only), matched CSS rules (with selectors and source files), and animations (including full @keyframes). No data collection, no network requests — everything runs locally.
+> Copy CSS from any element in Chrome DevTools with one click, a keyboard shortcut, or the right-click menu. Three modes: computed styles (non-default only), matched CSS rules (with selectors and source files), and animations (including full @keyframes). No data collection, no network requests — everything runs locally.
 
 ## License
 

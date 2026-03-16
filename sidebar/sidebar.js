@@ -592,3 +592,18 @@ function updateElementInfo() {
 
 chrome.devtools.panels.elements.onSelectionChanged.addListener(updateElementInfo);
 updateElementInfo();
+
+// --- Keyboard shortcut listener ---
+// When DevTools is open, keyboard shortcuts route through here to use $0
+
+const commandMap = {
+  "copy-computed": () => btnComputed.click(),
+  "copy-styles": () => btnStyles.click(),
+  "copy-animations": () => btnAnimations.click()
+};
+
+chrome.runtime.onMessage.addListener((msg) => {
+  if (msg.source === "keyboard" && commandMap[msg.action]) {
+    commandMap[msg.action]();
+  }
+});
