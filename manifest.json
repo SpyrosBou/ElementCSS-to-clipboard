@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "ElementCSS-to-clipboard",
+  "short_name": "Style Copier",
+  "version": "1.0.0",
+  "description": "Copy computed styles, matched CSS rules, and animations from the selected element in DevTools.",
+  "homepage_url": "https://github.com/SpyrosBou/ElementCSS-to-clipboard",
+  "minimum_chrome_version": "88",
+  "devtools_page": "devtools.html",
+  "permissions": ["clipboardWrite"],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

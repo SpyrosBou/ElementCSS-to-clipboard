@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Style Copier Test Page</title>
+  <style>
+    /* Reset */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Inter, system-ui, sans-serif;
+      font-size: 16px;
+      line-height: 1.5;
+      color: #1a1a2e;
+      background: #f0f0f5;
+      padding: 32px;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 24px;
+      color: #16213e;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 24px 0 12px;
+      color: #0f3460;
+    }
+
+    /* Card component */
+    .card {
+      background: #ffffff;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Flex layout */
+    .flex-row {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    /* Custom button */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background: #533483;
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background: #6b44a0;
+    }
+
+    /* Inline styles test target */
+    .inline-test {
+      font-style: italic;
+    }
+
+    /* Nested selectors */
+    .wrapper .nested-child {
+      border-left: 3px solid #e94560;
+      padding-left: 12px;
+      color: #e94560;
+    }
+
+    /* Multiple matching rules */
+    .multi-match {
+      font-weight: bold;
+    }
+
+    .card .multi-match {
+      text-decoration: underline;
+    }
+
+    div.multi-match {
+      letter-spacing: 0.5px;
+    }
+
+    /* Animations */
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.05); opacity: 0.8; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-20px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .animated-pulse {
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .animated-slide {
+      animation: slideIn 0.5s ease-out forwards;
+    }
+
+    .transition-box {
+      background: #533483;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: 6px;
+      transition: background 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+      cursor: pointer;
+      display: inline-block;
+    }
+
+    .transition-box:hover {
+      background: #6b44a0;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(83, 52, 131, 0.4);
+    }
+  </style>
+
+  <style>
+    /* Second style block for testing source attribution */
+    @media (min-width: 600px) {
+      .responsive-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 599px) {
+      .responsive-box {
+        display: flex;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Style Copier - Test Page</h1>
+
+  <h2>1. Basic Card</h2>
+  <div class="card" id="test-card">
+    <p>A card with multiple CSS properties applied via class.</p>
+  </div>
+
+  <h2>2. Inline Styles</h2>
+  <div class="card inline-test" style="background: #fffde7; border-color: #fbc02d; max-width: 400px;">
+    <p>This element has both class-based and inline styles.</p>
+  </div>
+
+  <h2>3. Flex Layout</h2>
+  <div class="flex-row">
+    <button class="btn btn-primary">Primary Button</button>
+    <button class="btn" style="background: #e0e0e0; color: #333;">Secondary</button>
+  </div>
+
+  <h2>4. Nested Selectors</h2>
+  <div class="wrapper">
+    <div class="card">
+      <p class="nested-child">This element matches `.wrapper .nested-child`</p>
+    </div>
+  </div>
+
+  <h2>5. Multiple Matching Rules</h2>
+  <div class="card">
+    <div class="multi-match">Matches three different selectors: .multi-match, .card .multi-match, div.multi-match</div>
+  </div>
+
+  <h2>6. Responsive / @media</h2>
+  <div class="responsive-box">
+    <div class="card">Column A</div>
+    <div class="card">Column B</div>
+  </div>
+
+  <h2>7. Deep Nesting (selector path test)</h2>
+  <div id="app">
+    <main>
+      <section>
+        <article>
+          <div class="card">
+            <p class="deeply-nested">Check the selector path for this element.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+  </div>
+
+  <h2>8. CSS Animation (pulse)</h2>
+  <div class="card animated-pulse">This element pulses continuously via @keyframes</div>
+
+  <h2>9. CSS Animation (slide-in)</h2>
+  <div class="card animated-slide">This element slid in via @keyframes slideIn</div>
+
+  <h2>10. CSS Transitions</h2>
+  <div class="transition-box">Hover me — has transition on background, transform, box-shadow</div>
+
+  <h2>11. SVG Element</h2>
+  <svg width="100" height="100" viewBox="0 0 100 100" class="test-svg">
+    <circle cx="50" cy="50" r="40" fill="#533483" stroke="#e94560" stroke-width="3" class="svg-circle"/>
+  </svg>
+</body>
+</html>
