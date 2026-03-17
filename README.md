@@ -4,6 +4,8 @@
 
 A Chrome DevTools extension that copies CSS from any element to your clipboard — via sidebar buttons, keyboard shortcuts, or right-click context menu.
 
+![ElementCSS sidebar preview](docs/preview.jpg)
+
 ## Features
 
 Three ways to copy CSS from an element:
