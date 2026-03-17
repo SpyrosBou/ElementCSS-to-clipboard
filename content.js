@@ -254,8 +254,6 @@ chrome.runtime.onMessage.addListener((msg) => {
   const extractor = extractors[msg.action];
   if (!extractor) return;
 
-  // For context menu: use last right-clicked element
-  // For keyboard shortcut: also use last right-clicked element (sidebar handles $0 separately)
   const el = lastRightClicked;
   if (!el || !el.parentNode) return;
 

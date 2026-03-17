@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-A Chrome DevTools extension that copies CSS from any element to your clipboard — via sidebar buttons, keyboard shortcuts, or right-click context menu.
+A Chrome DevTools extension that copies CSS from any element to your clipboard — via sidebar panel, keyboard shortcuts, or right-click context menu.
 
 ![ElementCSS sidebar preview](docs/preview.jpg)
 

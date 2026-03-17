@@ -1,16 +1,16 @@
 // Create context menu items on install
 chrome.runtime.onInstalled.addListener(() => {
-  const items = [
-    { id: "copy-computed", title: "Copy Computed Styles" },
-    { id: "copy-styles", title: "Copy Matched CSS Rules" },
-    { id: "copy-animations", title: "Copy Animations & Transitions" }
-  ];
-
   chrome.contextMenus.create({
     id: "element-css",
     title: "ElementCSS",
     contexts: ["all"]
   });
+
+  const items = [
+    { id: "copy-computed", title: "Copy Computed Styles" },
+    { id: "copy-styles", title: "Copy Matched CSS Rules" },
+    { id: "copy-animations", title: "Copy Animations & Transitions" }
+  ];
 
   for (const item of items) {
     chrome.contextMenus.create({
@@ -38,7 +38,7 @@ async function ensureContentScript(tabId) {
 chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (!tab?.id) return;
   await ensureContentScript(tab.id);
-  chrome.tabs.sendMessage(tab.id, { source: "context-menu", action: info.menuItemId });
+  chrome.tabs.sendMessage(tab.id, { source: "context-menu", action: info.menuItemId }).catch(() => {});
 });
 
 // Keyboard shortcuts → forward to both sidebar (for DevTools $0) and content script (fallback)
