@@ -7,15 +7,15 @@ chrome.runtime.onInstalled.addListener(() => {
   ];
 
   chrome.contextMenus.create({
-    id: "style-copier",
-    title: "Style Copier",
+    id: "element-css",
+    title: "ElementCSS",
     contexts: ["all"]
   });
 
   for (const item of items) {
     chrome.contextMenus.create({
       id: item.id,
-      parentId: "style-copier",
+      parentId: "element-css",
       title: item.title,
       contexts: ["all"]
     });

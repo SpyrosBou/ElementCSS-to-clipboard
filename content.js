@@ -257,6 +257,6 @@ chrome.runtime.onMessage.addListener((msg) => {
     const result = extractor(el);
     copyText(result);
   } catch (e) {
-    console.error("[Style Copier]", e.message);
+    console.error("[ElementCSS]", e.message);
   }
 });

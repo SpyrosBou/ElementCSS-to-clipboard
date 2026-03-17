@@ -1,4 +1,4 @@
-# ElementCSS-to-clipboard
+# ElementCSS
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
@@ -23,7 +23,7 @@ Three ways to copy CSS from an element:
 Shortcuts can be customized at `chrome://extensions/shortcuts`.
 
 ### Right-Click Context Menu
-Right-click any element on the page → **Style Copier** → choose what to copy.
+Right-click any element on the page → **ElementCSS** → choose what to copy.
 
 All outputs include element identification (tag, id, classes, selector path) as CSS comments.
 
@@ -40,15 +40,15 @@ Coming soon.
 2. Open `chrome://extensions` in Chrome
 3. Enable **Developer mode** (top right)
 4. Click **Load unpacked** and select this folder
-5. Open DevTools on any page — find **"Style Copier"** in the Elements panel sidebar
+5. Open DevTools on any page — find **"ElementCSS"** in the Elements panel sidebar
 
 ## Usage
 
-**Sidebar:** Select an element in the Elements panel → click a button in the Style Copier sidebar tab.
+**Sidebar:** Select an element in the Elements panel → click a button in the ElementCSS sidebar tab.
 
 **Keyboard:** Select an element in Elements panel → press a shortcut.
 
-**Right-click:** Right-click any element on the page → Style Copier → choose an option.
+**Right-click:** Right-click any element on the page → ElementCSS → choose an option.
 
 ### Example Output
 

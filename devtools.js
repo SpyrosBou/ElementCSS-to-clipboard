@@ -1,3 +1,3 @@
-chrome.devtools.panels.elements.createSidebarPane("Style Copier", (sidebar) => {
+chrome.devtools.panels.elements.createSidebarPane("ElementCSS", (sidebar) => {
   sidebar.setPage("sidebar/sidebar.html");
 });

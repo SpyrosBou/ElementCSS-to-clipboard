@@ -1,10 +1,10 @@
-# Privacy Policy — ElementCSS-to-clipboard
+# Privacy Policy — ElementCSS
 
 **Last updated:** March 16, 2026
 
 ## Data Collection
 
-ElementCSS-to-clipboard does **not** collect, store, transmit, or share any user data.
+ElementCSS does **not** collect, store, transmit, or share any user data.
 
 ## How It Works
 
