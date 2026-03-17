@@ -2,20 +2,23 @@
   "manifest_version": 3,
   "name": "ElementCSS",
   "short_name": "ElementCSS",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Copy computed styles, matched CSS rules, and animations from the selected element in DevTools.",
   "homepage_url": "https://github.com/SpyrosBou/ElementCSS-to-clipboard",
-  "minimum_chrome_version": "88",
+  "minimum_chrome_version": "102",
   "devtools_page": "devtools.html",
   "background": {
     "service_worker": "background.js"
   },
-  "permissions": ["clipboardWrite", "contextMenus", "activeTab"],
+  "permissions": ["clipboardWrite", "contextMenus", "activeTab", "scripting"],
   "content_scripts": [{
-    "matches": ["<all_urls>"],
+    "matches": ["http://*/*", "https://*/*"],
     "js": ["content.js"],
     "run_at": "document_idle"
   }],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
   "commands": {
     "copy-computed": {
       "suggested_key": { "default": "Ctrl+Shift+1", "mac": "Command+Shift+1" },

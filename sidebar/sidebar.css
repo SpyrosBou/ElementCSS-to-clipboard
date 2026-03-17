@@ -15,62 +15,142 @@ body {
 .container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
+  height: calc(100vh - 16px);
 }
 
 .element-info {
-  color: #9aa0a6;
   font-family: monospace;
   font-size: 11px;
   padding: 4px 6px;
   background: #292a2d;
   border-radius: 4px;
-  word-break: break-all;
   line-height: 1.4;
+  color: #9aa0a6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-shrink: 0;
 }
 
-.actions {
+.el-tag { color: #c58af9; font-weight: 600; }
+.el-id { color: #f28b82; font-weight: 600; }
+.el-classes { color: #8ab4f8; }
+
+.tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+  gap: 2px;
+  flex-shrink: 0;
 }
 
-button {
+.tab {
   flex: 1;
-  padding: 6px 10px;
-  border: 1px solid #5f6368;
-  border-radius: 4px;
+  padding: 5px 4px;
+  border: 1px solid #3c4043;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
   background: #292a2d;
-  color: #e8eaed;
+  color: #9aa0a6;
   font-size: 11px;
   font-family: system-ui, -apple-system, sans-serif;
   cursor: pointer;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.15s, color 0.15s;
 }
 
-button:hover:not(:disabled) {
+.tab:hover:not(:disabled) {
   background: #3c4043;
-  border-color: #8ab4f8;
+  color: #e8eaed;
 }
 
-button:focus-visible {
-  outline: 2px solid #8ab4f8;
-  outline-offset: 1px;
+.tab.active {
+  background: #3c4043;
+  color: #e8eaed;
+  border-color: #5f6368;
+  font-weight: 600;
 }
 
-button:active:not(:disabled) {
-  background: #44474a;
-}
-
-button:disabled {
+.tab:disabled {
   opacity: 0.4;
   cursor: default;
 }
 
+.tab:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: -2px;
+}
+
+.preview {
+  font-family: monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  padding: 8px;
+  background: #3c4043;
+  border-radius: 0 0 4px 4px;
+  color: #e8eaed;
+  overflow: auto;
+  white-space: pre;
+  tab-size: 2;
+  flex: 1;
+  min-height: 60px;
+}
+
+.preview:empty::before {
+  content: "Select an element to preview";
+  color: #5f6368;
+}
+
+.preview.loading::before {
+  content: "Extracting...";
+  color: #8ab4f8;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+#btn-copy {
+  padding: 6px 12px;
+  border: 1px solid #5f6368;
+  border-radius: 4px;
+  background: #8ab4f8;
+  color: #202124;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: system-ui, -apple-system, sans-serif;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+#btn-copy:hover:not(:disabled) {
+  background: #aecbfa;
+}
+
+#btn-copy:active:not(:disabled) {
+  background: #669df6;
+}
+
+#btn-copy:disabled {
+  opacity: 0.4;
+  cursor: default;
+  background: #292a2d;
+  color: #9aa0a6;
+}
+
+#btn-copy:focus-visible {
+  outline: 2px solid #8ab4f8;
+  outline-offset: 1px;
+}
+
 .status {
   font-size: 11px;
-  min-height: 18px;
-  padding: 2px 0;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .status.success { color: #81c995; }
@@ -87,21 +167,41 @@ button:disabled {
     color: #5f6368;
     background: #e8eaed;
   }
-  button {
+  .el-tag { color: #9334e6; }
+  .el-id { color: #c5221f; }
+  .el-classes { color: #1a73e8; }
+  .tab {
+    background: #e8eaed;
+    border-color: #dadce0;
+    color: #5f6368;
+  }
+  .tab:hover:not(:disabled) {
+    background: #dadce0;
+    color: #202124;
+  }
+  .tab.active {
     background: #fff;
     color: #202124;
     border-color: #dadce0;
   }
-  button:hover:not(:disabled) {
-    background: #e8eaed;
+  .preview {
+    background: #fff;
+    color: #202124;
+  }
+  .preview:empty::before { color: #9aa0a6; }
+  .preview.loading::before { color: #1a73e8; }
+  #btn-copy {
+    background: #1a73e8;
+    color: #fff;
     border-color: #1a73e8;
   }
-  button:focus-visible {
-    outline-color: #1a73e8;
+  #btn-copy:hover:not(:disabled) { background: #1967d2; }
+  #btn-copy:active:not(:disabled) { background: #185abc; }
+  #btn-copy:disabled {
+    background: #e8eaed;
+    color: #9aa0a6;
   }
-  button:active:not(:disabled) {
-    background: #dadce0;
-  }
+  button:focus-visible { outline-color: #1a73e8; }
   .status.success { color: #137333; }
   .status.error { color: #c5221f; }
   .status.info { color: #1a73e8; }

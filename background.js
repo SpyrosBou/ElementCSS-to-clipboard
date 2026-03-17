@@ -22,21 +22,34 @@ chrome.runtime.onInstalled.addListener(() => {
   }
 });
 
-// Context menu clicks → message content script
-chrome.contextMenus.onClicked.addListener((info, tab) => {
+// Ensure content script is injected before sending a message
+async function ensureContentScript(tabId) {
+  try {
+    await chrome.scripting.executeScript({
+      target: { tabId },
+      files: ["content.js"]
+    });
+  } catch {
+    // Script may already be injected or tab may not be scriptable
+  }
+}
+
+// Context menu clicks → ensure content script, then message it
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   if (!tab?.id) return;
+  await ensureContentScript(tab.id);
   chrome.tabs.sendMessage(tab.id, { source: "context-menu", action: info.menuItemId });
 });
 
 // Keyboard shortcuts → forward to both sidebar (for DevTools $0) and content script (fallback)
-chrome.commands.onCommand.addListener((command) => {
+chrome.commands.onCommand.addListener(async (command) => {
   // Broadcast to extension pages (sidebar picks this up for DevTools $0)
   chrome.runtime.sendMessage({ source: "keyboard", action: command }).catch(() => {});
 
   // Also send to active tab's content script (for right-click element fallback)
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    if (tabs[0]?.id) {
-      chrome.tabs.sendMessage(tabs[0].id, { source: "keyboard", action: command }).catch(() => {});
-    }
-  });
+  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (tab?.id) {
+    await ensureContentScript(tab.id);
+    chrome.tabs.sendMessage(tab.id, { source: "keyboard", action: command }).catch(() => {});
+  }
 });

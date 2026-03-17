@@ -1,3 +1,9 @@
+// Guard against double-injection (static + programmatic)
+if (window.__elementCSS) {
+  // Already injected — skip
+} else {
+window.__elementCSS = true;
+
 // Track the last right-clicked element
 let lastRightClicked = null;
 
@@ -260,3 +266,5 @@ chrome.runtime.onMessage.addListener((msg) => {
     console.error("[ElementCSS]", e.message);
   }
 });
+
+} // end double-injection guard

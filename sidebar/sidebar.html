@@ -7,12 +7,16 @@
 <body>
   <div class="container">
     <div class="element-info" id="element-info" aria-label="Selected element">No element selected</div>
-    <div class="actions">
-      <button type="button" id="btn-computed" aria-label="Copy computed styles to clipboard" disabled>Copy Computed</button>
-      <button type="button" id="btn-styles" aria-label="Copy matched CSS rules to clipboard" disabled>Copy Styles</button>
-      <button type="button" id="btn-animations" aria-label="Copy animations and keyframes to clipboard" disabled>Copy Animations</button>
+    <div class="tabs" role="tablist">
+      <button type="button" class="tab active" role="tab" aria-selected="true" data-mode="computed" disabled>Computed</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" data-mode="styles" disabled>Styles</button>
+      <button type="button" class="tab" role="tab" aria-selected="false" data-mode="animations" disabled>Animations</button>
     </div>
-    <div class="status" id="status" role="status" aria-live="polite"></div>
+    <pre class="preview" id="preview" aria-label="CSS output preview"></pre>
+    <div class="toolbar">
+      <button type="button" id="btn-copy" disabled>Copy to Clipboard</button>
+      <div class="status" id="status" role="status" aria-live="polite"></div>
+    </div>
   </div>
   <script src="sidebar.js"></script>
 </body>

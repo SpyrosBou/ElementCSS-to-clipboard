@@ -1,8 +1,12 @@
-const btnComputed = document.getElementById("btn-computed");
-const btnStyles = document.getElementById("btn-styles");
-const btnAnimations = document.getElementById("btn-animations");
+const tabs = document.querySelectorAll(".tab");
+const preview = document.getElementById("preview");
+const btnCopy = document.getElementById("btn-copy");
 const elementInfo = document.getElementById("element-info");
 const statusEl = document.getElementById("status");
+
+let activeMode = "computed";
+let cachedResults = {};
+let hasElement = false;
 
 // --- Element identification (shared by both extractors) ---
 
@@ -219,12 +223,10 @@ function buildAnimationsCode() {
         }
         transProps[transPropNames[i]] = val;
       }
-      // Also check if transition-property is set to something specific
       if (transProps['transition-property'] && transProps['transition-property'] !== 'all'
           && transProps['transition-property'] !== 'none') {
         hasTransition = true;
       }
-      // Check if duration is non-zero
       if (transProps['transition-duration'] && transProps['transition-duration'] !== '0s') {
         hasTransition = true;
       }
@@ -247,12 +249,10 @@ function buildAnimationsCode() {
             delay: anim.effect && anim.effect.getTiming ? anim.effect.getTiming().delay : null
           };
 
-          // Get computed keyframes if available
           if (anim.effect && anim.effect.getKeyframes) {
             var kfs = anim.effect.getKeyframes();
             info.keyframes = kfs.map(function(kf) {
               var obj = { offset: kf.offset, easing: kf.easing, composite: kf.composite };
-              // Extract all animated properties
               for (var key in kf) {
                 if (key !== 'offset' && key !== 'easing' && key !== 'composite'
                     && key !== 'computedOffset') {
@@ -329,7 +329,6 @@ function formatAnimationsResult(result) {
     return lines.join("\n");
   }
 
-  // CSS animation properties
   if (result.animProps) {
     lines.push("/* --- CSS Animation Properties --- */");
     for (const [prop, val] of Object.entries(result.animProps)) {
@@ -338,7 +337,6 @@ function formatAnimationsResult(result) {
     lines.push("");
   }
 
-  // CSS transition properties
   if (result.transProps) {
     lines.push("/* --- CSS Transition Properties --- */");
     for (const [prop, val] of Object.entries(result.transProps)) {
@@ -347,7 +345,6 @@ function formatAnimationsResult(result) {
     lines.push("");
   }
 
-  // Active Web Animations (runtime state)
   if (result.webAnimations.length > 0) {
     lines.push("/* --- Active Animations (runtime) --- */");
     for (const anim of result.webAnimations) {
@@ -359,7 +356,6 @@ function formatAnimationsResult(result) {
       if (anim.direction) lines.push(`/*   direction: ${anim.direction} */`);
       if (anim.delay) lines.push(`/*   delay: ${anim.delay}ms */`);
 
-      // Output keyframes
       if (anim.keyframes && anim.keyframes.length > 0) {
         lines.push("");
         lines.push(`@keyframes ${anim.name} {`);
@@ -368,7 +364,6 @@ function formatAnimationsResult(result) {
           const props = Object.entries(kf)
             .filter(([k]) => k !== "offset" && k !== "easing" && k !== "composite")
             .map(([k, v]) => {
-              // Convert camelCase to kebab-case
               const kebab = k.replace(/[A-Z]/g, (m) => "-" + m.toLowerCase());
               return `    ${kebab}: ${v};`;
             });
@@ -383,7 +378,6 @@ function formatAnimationsResult(result) {
     }
   }
 
-  // @keyframes from stylesheets
   const sheetKeyframes = Object.entries(result.keyframesRules);
   if (sheetKeyframes.length > 0) {
     lines.push("/* --- @keyframes (from stylesheets) --- */");
@@ -444,6 +438,14 @@ function formatMatchedResult(result) {
   return lines.join("\n");
 }
 
+// --- Mode config ---
+
+const modes = {
+  computed: { build: buildComputedStylesCode, format: formatComputedResult },
+  styles: { build: buildMatchedRulesCode, format: formatMatchedResult },
+  animations: { build: buildAnimationsCode, format: formatAnimationsResult }
+};
+
 // --- Clipboard ---
 
 async function copyToClipboard(text) {
@@ -495,65 +497,81 @@ function evalInPage(code) {
   });
 }
 
-// --- Shared extract-and-copy handler ---
+// --- Extract and show preview ---
 
-async function extractAndCopy(buildCode, formatResult, countResult) {
-  showStatus("Extracting...", "info");
+let extractionGeneration = 0;
+
+async function extractForMode(mode) {
+  const gen = ++extractionGeneration;
+  const config = modes[mode];
+  if (!config) return;
+
+  preview.textContent = "";
+  preview.classList.add("loading");
+  btnCopy.disabled = true;
+
   try {
-    const result = await evalInPage(buildCode());
+    const result = await evalInPage(config.build());
+    if (gen !== extractionGeneration) return;
+
+    preview.classList.remove("loading");
+
     if (result.error) {
-      showStatus(result.error, "error");
+      preview.textContent = "Error: " + result.error;
       return;
     }
-    const formatted = formatResult(result);
-    const ok = await copyToClipboard(formatted);
-    if (ok) {
-      showStatus(`Copied ${countResult(result)}`, "success");
-    } else {
-      showStatus("Clipboard write failed", "error");
-    }
+
+    const formatted = config.format(result);
+    cachedResults[mode] = formatted;
+    preview.textContent = formatted;
+    btnCopy.disabled = false;
   } catch (e) {
-    showStatus(e.message, "error");
+    if (gen !== extractionGeneration) return;
+    preview.classList.remove("loading");
+    preview.textContent = "Error: " + e.message;
   }
 }
 
-// --- Button handlers ---
+// --- Tab switching ---
 
-btnComputed.addEventListener("click", () =>
-  extractAndCopy(
-    buildComputedStylesCode,
-    formatComputedResult,
-    (r) => `${r.styles.length} computed properties`
-  )
-);
+function setActiveTab(mode) {
+  activeMode = mode;
+  for (const tab of tabs) {
+    const isActive = tab.dataset.mode === mode;
+    tab.classList.toggle("active", isActive);
+    tab.setAttribute("aria-selected", isActive);
+  }
 
-btnStyles.addEventListener("click", () =>
-  extractAndCopy(
-    buildMatchedRulesCode,
-    formatMatchedResult,
-    (r) => {
-      const count = r.matchedRules.length + (r.inlineStyles ? 1 : 0);
-      return `${count} matched rule${count !== 1 ? "s" : ""}`;
-    }
-  )
-);
+  // Show cached result or extract fresh
+  if (cachedResults[mode]) {
+    preview.textContent = cachedResults[mode];
+    preview.classList.remove("loading");
+    btnCopy.disabled = false;
+  } else if (hasElement) {
+    extractForMode(mode);
+  }
+}
 
-btnAnimations.addEventListener("click", () =>
-  extractAndCopy(
-    buildAnimationsCode,
-    formatAnimationsResult,
-    (r) => {
-      if (!r.hasContent) return "no animations found";
-      const parts = [];
-      if (r.animProps) parts.push("animations");
-      if (r.transProps) parts.push("transitions");
-      if (r.webAnimations.length > 0) parts.push(`${r.webAnimations.length} active`);
-      const kfCount = Object.keys(r.keyframesRules).length;
-      if (kfCount > 0) parts.push(`${kfCount} @keyframes`);
-      return parts.join(" + ");
-    }
-  )
-);
+for (const tab of tabs) {
+  tab.addEventListener("click", () => {
+    if (tab.classList.contains("active")) return;
+    setActiveTab(tab.dataset.mode);
+  });
+}
+
+// --- Copy button ---
+
+btnCopy.addEventListener("click", async () => {
+  const text = cachedResults[activeMode];
+  if (!text) return;
+
+  const ok = await copyToClipboard(text);
+  if (ok) {
+    showStatus("Copied!", "success");
+  } else {
+    showStatus("Clipboard write failed", "error");
+  }
+});
 
 // --- Selection tracking ---
 
@@ -561,32 +579,65 @@ let selectionGeneration = 0;
 
 function updateElementInfo() {
   const gen = ++selectionGeneration;
+
+  // Clear cached results on new selection
+  cachedResults = {};
+
   evalInPage(`(function() {
     if (!$0) return null;
     var tag = $0.tagName.toLowerCase();
-    var id = $0.id ? '#' + $0.id : '';
+    var id = $0.id || '';
     var cls = (typeof $0.className === 'string' ? $0.className : $0.getAttribute('class') || '').trim();
-    var classSuffix = cls ? '.' + cls.split(/\\s+/).join('.') : '';
-    return tag + id + classSuffix;
+    var classes = cls ? cls.split(/\\s+/) : [];
+    return { tag: tag, id: id, classes: classes };
   })()`).then((info) => {
     if (gen !== selectionGeneration) return;
     if (info) {
-      elementInfo.textContent = info;
-      btnComputed.disabled = false;
-      btnStyles.disabled = false;
-      btnAnimations.disabled = false;
+      hasElement = true;
+
+      elementInfo.innerHTML = "";
+      const tagSpan = document.createElement("span");
+      tagSpan.className = "el-tag";
+      tagSpan.textContent = info.tag;
+      elementInfo.appendChild(tagSpan);
+
+      if (info.id) {
+        const idSpan = document.createElement("span");
+        idSpan.className = "el-id";
+        idSpan.textContent = "#" + info.id;
+        elementInfo.appendChild(idSpan);
+      }
+
+      if (info.classes.length > 0) {
+        const classSpan = document.createElement("span");
+        classSpan.className = "el-classes";
+        const maxShow = 3;
+        const shown = info.classes.slice(0, maxShow).map(c => "." + c).join("");
+        const remaining = info.classes.length - maxShow;
+        classSpan.textContent = shown + (remaining > 0 ? ` (+${remaining})` : "");
+        elementInfo.appendChild(classSpan);
+      }
+
+      for (const tab of tabs) tab.disabled = false;
+
+      // Auto-extract the active tab
+      extractForMode(activeMode);
     } else {
+      hasElement = false;
       elementInfo.textContent = "No element selected";
-      btnComputed.disabled = true;
-      btnStyles.disabled = true;
-      btnAnimations.disabled = true;
+      preview.textContent = "";
+      preview.classList.remove("loading");
+      btnCopy.disabled = true;
+      for (const tab of tabs) tab.disabled = true;
     }
   }).catch(() => {
     if (gen !== selectionGeneration) return;
+    hasElement = false;
     elementInfo.textContent = "No element selected";
-    btnComputed.disabled = true;
-    btnStyles.disabled = true;
-    btnAnimations.disabled = true;
+    preview.textContent = "";
+    preview.classList.remove("loading");
+    btnCopy.disabled = true;
+    for (const tab of tabs) tab.disabled = true;
   });
 }
 
@@ -594,16 +645,26 @@ chrome.devtools.panels.elements.onSelectionChanged.addListener(updateElementInfo
 updateElementInfo();
 
 // --- Keyboard shortcut listener ---
-// When DevTools is open, keyboard shortcuts route through here to use $0
 
 const commandMap = {
-  "copy-computed": () => btnComputed.click(),
-  "copy-styles": () => btnStyles.click(),
-  "copy-animations": () => btnAnimations.click()
+  "copy-computed": "computed",
+  "copy-styles": "styles",
+  "copy-animations": "animations"
 };
 
-chrome.runtime.onMessage.addListener((msg) => {
+chrome.runtime.onMessage.addListener(async (msg) => {
   if (msg.source === "keyboard" && commandMap[msg.action]) {
-    commandMap[msg.action]();
+    const mode = commandMap[msg.action];
+    setActiveTab(mode);
+
+    // Wait for extraction if needed, then copy
+    const waitForResult = () => {
+      if (cachedResults[mode]) {
+        btnCopy.click();
+      } else {
+        setTimeout(waitForResult, 50);
+      }
+    };
+    waitForResult();
   }
 });
