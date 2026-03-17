@@ -21,15 +21,15 @@
   },
   "commands": {
     "copy-computed": {
-      "suggested_key": { "default": "Ctrl+Shift+1", "mac": "Command+Shift+1" },
+      "suggested_key": { "default": "Ctrl+Shift+8", "mac": "Command+Shift+8" },
       "description": "Copy computed styles of selected element"
     },
     "copy-styles": {
-      "suggested_key": { "default": "Ctrl+Shift+2", "mac": "Command+Shift+2" },
+      "suggested_key": { "default": "Ctrl+Shift+9", "mac": "Command+Shift+9" },
       "description": "Copy matched CSS rules of selected element"
     },
     "copy-animations": {
-      "suggested_key": { "default": "Ctrl+Shift+3", "mac": "Command+Shift+3" },
+      "suggested_key": { "default": "Ctrl+Shift+0", "mac": "Command+Shift+0" },
       "description": "Copy animations of selected element"
     }
   },

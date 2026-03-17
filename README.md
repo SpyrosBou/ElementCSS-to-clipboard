@@ -18,9 +18,9 @@ Three ways to copy CSS from an element:
 ### Keyboard Shortcuts
 | Shortcut | Mac | Action |
 |----------|-----|--------|
-| `Ctrl+Shift+1` | `Cmd+Shift+1` | Copy computed styles |
-| `Ctrl+Shift+2` | `Cmd+Shift+2` | Copy matched CSS rules |
-| `Ctrl+Shift+3` | `Cmd+Shift+3` | Copy animations |
+| `Ctrl+Shift+8` | `Cmd+Shift+8` | Copy computed styles |
+| `Ctrl+Shift+9` | `Cmd+Shift+9` | Copy matched CSS rules |
+| `Ctrl+Shift+0` | `Cmd+Shift+0` | Copy animations |
 
 Shortcuts can be customized at `chrome://extensions/shortcuts`.
 
